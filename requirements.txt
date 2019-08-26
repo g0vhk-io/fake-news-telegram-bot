@@ -1,0 +1,9 @@
+ImageHash==4.0
+djangorestframework==3.10.2
+django==2.1.7
+mysqlclient==1.4.4
+uWSGI==2.0.18
+goose3==3.1.6
+python-resize-image==1.1.19
+python-telegram-bot==11.1.0
+requests-toolbelt==0.9.1
