@@ -35,7 +35,7 @@ def send_link_report(url):
 def send_image_report(buf, description):
     uri = '/api/upload_image_report'
     m = MultipartEncoder(
-            fields={'image':('a.jpg', buf, 'image/jpeg')}
+            fields={'image':('a.jpg', buf, 'image/jpeg'), 'description': description}
             )
     headers = {'Authorization': 'Token ' + TOKEN, 'Content-Type': m.content_type}
     r = requests.post(HOST + uri, headers=headers, data=m)
@@ -68,7 +68,7 @@ def echo(bot, update):
             width, height = image.size
             logging.info('%d, %d' % (width, height))
             bio.seek(0)
-            result = send_image_report(bio, '')
+            result = send_image_report(bio, message.caption)
             if result is not None:
                 if 'reason' in result:
                     raise Exception(result['reason'])
