@@ -26,7 +26,7 @@ def send_link_report(url):
     headers = {'Authorization': 'Token ' + TOKEN, 'Content-Type': 'application/json'}
     r = requests.post(HOST + uri, headers=headers, json={'url': url})
     logging.info(r.json())
-    if r.status_code == 201:
+    if r.status_code / 100 == 2:
         j = r.json()
         return j
     else:
@@ -43,6 +43,8 @@ def send_image_report(buf, description):
     if r.status_code == 201:
         j = r.json()
         return j
+    if r.status_code / 100 == 2:
+        return r.json()
     if r.status_code / 100 == 4:
         return r.json()
     else:
@@ -72,8 +74,9 @@ def echo(bot, update):
             if result is not None:
                 if 'reason' in result:
                     raise Exception(result['reason'])
-
-                if 'result' in result:
+                elif 'too_many' in result:
+                    update.message.reply_text('今日的隊列已滿了。')
+                elif result.get('result', '') == 'already_existed':
                     update.message.reply_text('已有相同的舉報 。')
                 else:
                     update.message.reply_text('謝謝你，已新增了一個舉報。')
@@ -87,9 +90,13 @@ def echo(bot, update):
                 url = message.text[url_entity.offset: url_entity.length]
                 logging.debug('url:' + url)
                 result = send_link_report(url)
+                print('result')
+                print(result)
                 if result is not None:
-                    if 'result' in result:
+                    if result.get('result', '') == 'already_existed':
                         update.message.reply_text('已有相同的舉報 。')
+                    elif 'too_many' in result:
+                        update.message.reply_text('今日的隊列已滿了。')
                     else:
                         update.message.reply_text('謝謝你，已新增了一個舉報。')
                     return
