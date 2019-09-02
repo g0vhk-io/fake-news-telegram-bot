@@ -9,7 +9,7 @@ services:
   - docker
 
 script:
-    - docker build -t $ORG/$REPO:$COMMIT fake-news-telegram-bot
+    - docker build -t $ORG/$REPO:$COMMIT .
 
 after_success:
     - export TAG='latest'
