@@ -26,11 +26,10 @@ def send_link_report(url):
     headers = {'Authorization': 'Token ' + TOKEN, 'Content-Type': 'application/json'}
     r = requests.post(HOST + uri, headers=headers, json={'url': url})
     logging.info(r.json())
-    if r.status_code / 100 == 2:
+    if r.status_code / 100 < 5:
         j = r.json()
         return j
-    else:
-        return None
+    return None
 
 def send_image_report(buf, description):
     uri = '/api/upload_image_report'
@@ -43,9 +42,7 @@ def send_image_report(buf, description):
     if r.status_code == 201:
         j = r.json()
         return j
-    if r.status_code / 100 == 2:
-        return r.json()
-    if r.status_code / 100 == 4:
+    if r.status_code / 100 < 5:
         return r.json()
     else:
         return None
@@ -93,6 +90,7 @@ def echo(bot, update):
                 print('result')
                 print(result)
                 if result is not None:
+                    print('chckecing')
                     if result.get('result', '') == 'already_existed':
                         update.message.reply_text('已有相同的舉報 。')
                     elif 'too_many' in result:
