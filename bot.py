@@ -10,9 +10,13 @@ import os
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+def send_tutorial(update):
+    update.message.reply_text('用法:\n請把假新聞的連結發結Telegram bot，Telegram bot 會自動把新聞上載到伺服器(https://fakenews.g0vhk.io/)。')
+
 def start(bot, update):
     """Send a message when the command /start is issued."""
-    update.message.reply_text('Hi!')
+    send_tutorial(update)
 
 
 
@@ -98,7 +102,12 @@ def echo(bot, update):
                     else:
                         update.message.reply_text('謝謝你，已新增了一個舉報。')
                     return
-        update.message.reply_text('暫時只支持圖片或網址。')
+        elif len(message.text) > 0:
+            if len(message.text) <= 30:
+                update.message.reply_text('文字最少要有30字。')
+                return
+
+        send_tutorial(update)
     except Exception as e:
         logging.error(e, exc_info=True)
         update.message.reply_text('發生異常，請重試。')
