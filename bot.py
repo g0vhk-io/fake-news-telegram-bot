@@ -102,7 +102,11 @@ def echo(bot, update):
                     else:
                         update.message.reply_text('謝謝你，已新增了一個舉報。')
                     return
-        update.message.reply_text('暫時只支持圖片或網址。')
+        elif len(message.text) > 0:
+            if len(message.text) <= 30:
+                update.message.reply_text('文字最少要有30字。')
+                return
+
         send_tutorial(update)
     except Exception as e:
         logging.error(e, exc_info=True)
